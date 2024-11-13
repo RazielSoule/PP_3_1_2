@@ -7,16 +7,19 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -28,6 +31,7 @@ public class AdminController {
     @GetMapping(value = "/add-user")
     public String newUser(ModelMap model) {
         model.addAttribute("user", new User());
+        model.addAttribute("rolesList", roleService.getRoles());
         return "admin/add-user";
     }
 
@@ -44,6 +48,7 @@ public class AdminController {
     public String editUser(@RequestParam(value = "id") int id, ModelMap model){
         model.addAttribute("UserId", id);
         model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("rolesList", roleService.getRoles());
         return "admin/edit-user";
     }
 
